@@ -124,10 +124,14 @@ def interfaces():
             session.sendline('exit')
 
         elif a == '4':
-            session.sendline('end')
-            session.expect('#')                
-            session.sendline('line console 0')
-            session.expect('#')
+            c = session.expect([r'\(config-if\)#',r'\(config\)#',r'#',pexpect.TIMEOUT,pexpect.EOF])
+            if c == 0:
+                session.sendline('exit')
+            elif c == 1:
+                
+                session.sendline('end') 
+            elif c==2:
+                break
             session.sendline('show ip interface brief')
             session.expect('#')
             display = session.before.splitlines()[1:-1]
