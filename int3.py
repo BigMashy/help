@@ -77,6 +77,8 @@ def interfaces():
             if result != 0:
                 print('Error: Invalid IP address entered or already configured.')
             else:
+                session.sendline('no shutdown')
+                session.expect([r'\(config-if\)#'])
                 print(f'Loopback{b} configured with IP address {ip}.')
             session.sendline('exit')
 
@@ -131,7 +133,7 @@ def interfaces():
             session.expect('#')
             session.sendline('show ip interface brief')
             session.expect('#')
-            display = session.before.splitlines()[1:-1]
+            display = session.before.splitlines()
 
             for a in display:
                 print(a)
