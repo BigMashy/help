@@ -129,14 +129,15 @@ def interfaces():
 
             session.sendline('exit')
             session.expect('#')
-            session.sendline('end')
-            session.expect('#')
             session.sendline('show ip interface brief')
-            session.expect('#')
-            display = session.before.splitlines()
+            result = session.expect('#',pexpect.TIMEOUT, pexpect.EOF)
+            if result == 0:
+                display = session.before.splitlines()[1:-1]
 
-            for a in display:
-                print(a)
+                for a in display:
+                  print(a)
+            else:
+                print('error')
 
         elif a == '5':
             print('Exiting configuration.')
