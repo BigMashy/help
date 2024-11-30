@@ -80,18 +80,13 @@ def interfaces():
                 session.sendline('no shutdown')
                 session.expect([r'\(config-if\)#'])
                 print(f'Loopback{b} configured with IP address {ip}.')
-            session.sendline('exit')
+
 
         elif a == '2':
             session.sendline('conf t')
             session.expect('#')
-            result = session.expect([r'\(config-if\)#', pexpect.TIMEOUT, pexpect.EOF])
-            result2 = session.expect([r'\(config\)#', pexpect.TIMEOUT, pexpect.EOF])
-            if result != 0 or result2 != 0:
-                print('Entering Configuration mode...')
-                session.sendline('conf t')
 
-            int2 = input('Interface you want to edit: (G0/0 or G0/1)')
+            int2 = input('Interface you want to edit: (Only G0/0 and loopbacks available)')
             session.sendline(f'interface {int2}')
             result = session.expect([r'\(config-if\)#', pexpect.TIMEOUT, pexpect.EOF])
             if result != 0:
@@ -105,7 +100,7 @@ def interfaces():
                 print('Error: Invalid IP address entered or already configured.')
             else:
                 print(f'{int2} configured with IP address {ip2}.')
-            session.sendline('exit')
+
 
         elif a == '3':
             session.sendline('conf t')
@@ -123,21 +118,18 @@ def interfaces():
                 print(f'Error: Unable to remove IP address from {interface}.')
             else:
                 print(f'IP address removed from {interface}.')
-            session.sendline('exit')
 
         elif a == '4':
 
-            session.sendline('exit')
+            session.sendline('end')
             session.expect('#')
             session.sendline('show ip interface brief')
-            result = session.expect('#',pexpect.TIMEOUT, pexpect.EOF)
-            if result == 0:
-                display = session.before.splitlines()[1:-1]
+            session.expect('#')
 
-                for a in display:
+            display = session.before.splitlines()[1:-1]
+
+            for a in display:
                   print(a)
-            else:
-                print('error')
 
         elif a == '5':
             print('Exiting configuration.')
